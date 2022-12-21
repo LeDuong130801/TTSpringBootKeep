@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="images/favicon.ico">
+	<title>KEEP</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Icons -->
+	
+	<link href="css/font-awesome.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="css/style.css" rel="stylesheet">
+	<style>
+		.nav-link.active {
+			background-color: rgb(228, 212, 66) !important;
+		}
+
+		.text-black {
+			color: black !important;
+		}
+
+		.bg-white {
+			color: #ffffff !important;
+		}
+
+		.custom-input {
+			border: gray solid 2px;
+			border-radius: 5px;
+		}
+
+		.b-0 {
+			border: 0px !important;
+		}
+
+		.form-control:focus {
+			border-color: #ffffff !important;
+			box-shadow: 0 0 0px rgba(255, 255, 255, 1) !important;
+		}
+		
+        #tieuDe {
+            display: block;
+            overflow: hidden;
+            resize: none;
+        }
+        #noiDung {
+            display: block;
+            overflow: hidden;
+            resize: none;
+        }
+		.custom-button-o{
+			width: 30px;
+			height: 30px;
+			border-radius: 15px;
+		}
+		.btn-tran{
+			color: black;
+			border: transparent;
+			background-color: transparent;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container-fluid" id="wrapper">
+		<div class="row">
+			<nav class="sidebar col-xs-12 col-sm-5 col-lg-4 col-xl-3 bg-white">
+				<h1 class="site-title"><a href="index.html" class="text-black"><em class="fa-solid fa-bar"></em>
+						Keep</a></h1>
+
+				<a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><em class="fa fa-bars"></em></a>
+				<ul class="nav flex-column sidebar-nav">
+					<li class="nav-item"><a class="nav-link  text-black" href="index.html"><em
+								class="fa fa-dashboard"></em> Ghi chú </a></li>
+					<li class="nav-item"><a class="nav-link text-black active" href="loiNhac.html"><em
+								class="fa fa-calendar-o"></em> Lời nhắc<span class="sr-only">(current)</span></a></li>
+					<li class="nav-item"><a class="nav-link text-black" href="suaNhan.html"><em
+								class="fa fa-bar-chart"></em> Chỉnh sửa nhãn</a></li>
+					<li class="nav-item"><a class="nav-link text-black" href="luuTru.html"><em
+								class="fa fa-hand-o-up"></em> Lưu trữ</a></li>
+					<li class="nav-item"><a class="nav-link text-black" href="thungRac.html"><em
+								class="fa fa-pencil-square-o"></em> Thùng rác</a></li>
+				</ul>
+				<a href="login.html" class="logout-button"><em class="fa fa-power-off"></em> Signout</a>
+			</nav>
+			<main class="col-xs-12 col-sm-7 col-lg-8 col-xl-9 pt-3 pl-4 ml-auto">
+				<header class="page-header row justify-center">
+					<div class="col-md-6 col-lg-8">
+						<h1 class="float-left text-center text-md-left">Dashboard</h1>
+					</div>
+					<div class="dropdown user-dropdown col-md-6 col-lg-4 text-center text-md-right"><a
+							class="btn btn-stripped dropdown-toggle" href="#" id="dropdownMenuLink"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<img src="images/profile-pic.jpg" alt="profile photo"
+								class="circle float-left profile-photo" width="50" height="auto">
+							<div class="username mt-1">
+								<h4 class="mb-1">Username</h4>
+								<h6 class="text-muted">Super Admin</h6>
+							</div>
+						</a>
+						<div class="dropdown-menu dropdown-menu-right" style="margin-right: 1.5rem;"
+							aria-labelledby="dropdownMenuLink"><a class="dropdown-item" href="#"><em
+									class="fa fa-user-circle mr-1"></em> View Profile</a>
+							<a class="dropdown-item" href="#"><em class="fa fa-sliders mr-1"></em> Preferences</a>
+							<a class="dropdown-item" href="#"><em class="fa fa-power-off mr-1"></em> Logout</a>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</header>
+			</main>
+		</div>
+	</div>
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+		integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+		crossorigin="anonymous"></script>
+	<script src="dist/js/bootstrap.min.js"></script>
+
+	<script src="js/chart.min.js"></script>
+	<script src="js/chart-data.js"></script>
+	<script src="js/easypiechart.js"></script>
+	<script src="js/easypiechart-data.js"></script>
+	<script src="js/bootstrap-datepicker.js"></script>
+	<script src="js/custom.js"></script>
+	<script>
+		var startCharts = function () {
+			var chart1 = document.getElementById("line-chart").getContext("2d");
+			window.myLine = new Chart(chart1).Line(lineChartData, {
+				responsive: true,
+				scaleLineColor: "rgba(0,0,0,.2)",
+				scaleGridLineColor: "rgba(0,0,0,.05)",
+				scaleFontColor: "#c5c7cc "
+			});
+		};
+		window.setTimeout(startCharts(), 1000);
+		function hideContent(contentDisplaying) {
+			const benNgoai = document.getElementById("phanBenNgoai");
+			const benTrong = document.getElementById("phanBenTrong");
+			const noiDung = document.getElementById("noiDung");
+			const tieuDe = document.getElementById("tieuDe");
+			if (contentDisplaying) {
+				benNgoai.style.display = "block";
+				benTrong.style.display = "none";
+				let noiDungMoi = noiDung.value;
+				let tieuDeMoi = tieuDe.value;
+				noiDung.value = '';
+				tieuDe.value = '';
+				createNewTask(tieuDeMoi, noiDungMoi);
+			}
+			else {
+				benNgoai.style.display = "none";
+				benTrong.style.display = "block";
+				noiDung.focus();
+			}
+		}
+		function createNewTask(tieuDe, noiDung){
+			const listNote = document.getElementById("listNote");
+			const newCard = document.createElement("div");
+			newCard.classList.add("col-lg-4");
+			newCard.classList.add("mb-4");
+			newCard.innerHTML ='<div class="card text-dark bg-default"><div class="card-header">'+tieuDe+'</div><div class="card-block"><p>'+noiDung+'</p></div></div>';
+			listNote.appendChild(newCard);
+		}
+	</script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+		integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+		crossorigin="anonymous"></script>
+
+</body>
+
+</html>

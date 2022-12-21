@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="cha co gi ma ta">
+    <meta name="author" content="Duong">
+    <link rel="icon" href="images/favicon.ico">
+    <title>KEEP</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Icons -->
+
+    <link href="css/font-awesome.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modal.css">
+    <style>
+        body {
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+        .sidebar {
+            z-index: 1;
+        }
+
+        .tr-1-1 {
+            transform: translate(-2px, -1px);
+        }
+
+        .mini-nav {
+            border-radius: 14px;
+            padding-left: 2px;
+            margin-bottom: 3px;
+        }
+
+        .mini-nav button {
+            background-color: transparent !important;
+            border: 0px;
+            opacity: 0.5;
+        }
+
+        .mini-nav button:hover {
+            background-color: #5b5eaf !important;
+            opacity: 1;
+        }
+
+        .btn-mini {
+            border-radius: 50%;
+        }
+
+        .text-title {
+            font-size: 18px;
+        }
+
+        .nav-link.active {
+            background-color: #7376df !important;
+        }
+
+        .nav-link a:hover {
+            background-color: rgb(228, 212, 66) !important;
+        }
+
+        .card:hover {
+            /* background-color: lightgray; */
+            border: black solid 2px;
+        }
+
+        .text-black {
+            color: black !important;
+        }
+
+        .sidebar a {
+            text-transform: none;
+            font-size: 14px;
+        }
+
+        .bg-white {
+            color: #ffffff !important;
+        }
+
+        .custom-input {
+            border: gray solid 2px;
+            border-radius: 5px;
+        }
+
+        .b-0 {
+            border: 0px !important;
+        }
+
+        .b-0-bottom-1 {
+            border: 0px !important;
+            border-bottom: black solid 1px !important;
+        }
+
+        .form-control:focus {
+            border-color: #ffffff !important;
+            box-shadow: 0 0 0px rgba(255, 255, 255, 1) !important;
+        }
+
+        #selectTag:focus {
+            border-color: #000000 !important;
+            box-shadow: 0 0 0px rgba(255, 255, 255, 1) !important;
+        }
+
+        #tieuDe {
+            display: block;
+            overflow: hidden;
+            resize: none;
+        }
+
+        #noiDung {
+            display: block;
+            overflow: hidden;
+            resize: none;
+        }
+
+        .custom-button-o {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+        }
+
+        .custom-button-o-small {
+            width: 24px;
+            height: 24px;
+            border-radius: 10px;
+        }
+
+        .btn-tran {
+            color: black;
+            border: transparent;
+            background-color: transparent;
+        }
+
+        .suatag:hover {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid" id="wrapper">
+        <div class="row">
+            <div class="modal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-scrollable modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" id="modalChinhSuaNhan">
+                <div class="modal-content">
+                    <h5 class="modal-title">Chỉnh sửa nhãn</h5>
+                    <div class="row input-group m-0 p-0" id="phanTaoTag">
+                        <input type="text" class="form-control b-0-bottom-1 input-group-text text-left"
+                            placeholder="Tạo nhãn mới" id="nhanMoi">
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-white b-0 pt-0 pb-0">
+                                <i class="fa fa-check text-dark" id="hoanThanhChinhSuaNhan"></i></span>
+                        </div>
+                    </div>
+                    <span id="phanChinhSuaTag">
+
+                    </span>
+                    <div class="modal-footer pt-0">
+                        <button type="button" class="btn btn-tran huyChinhSuaNhan" id="dongChinhSuaNhan">Hủy</button>
+                        <button type="button" class="btn btn-tran hoanThanhChinhSuaNhan">Xong</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" id="modalChinhSuaGhiChu">
+                <div class="modal-content">
+                    <h3 class="modal-title"><input type="text" id="titleSuaGhiChu" class="form-control b-0 text-title">
+                    </h3>
+                    <div class="row input-group m-0 p-0" id="phanSuaNote">
+                        <input type="text" class="form-control b-0 text-left" id="contentSuaGhiChu">
+                    </div>
+                    <div class="modal-footer p-0">
+                            <div class="row" id="currentTagSelected">
+
+                            </div>
+                            <button class="custom-button-o mr-2" id="btnThemSuaNhan" title=""><i
+                                    class="fa fa-tag mt-1"></i></button>
+                            <button type="button" class="btn btn-tran hoanThanhChinhSuaGhiChu">Đóng</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" id="modalThemSuaNhan">
+                <div class="modal-content">
+                    <h3 class="modal-title">
+                        Chọn nhãn
+                    </h3>
+                    <div class="row m-0 p-0" id="phanThemSuaNhan">
+                    </div>
+                    <div class="modal-footer p-0">
+                        <button type="button" class="btn btn-tran hoanThanhThemSuaNhan">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <nav class="sidebar col-xs-12 col-sm-4 col-lg-3 col-xl-2">
+                <h1 class="site-title"><a href="index.html"><em class="fa-solid fa-bar"></em>
+                        Keep</a></h1>
+
+                <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><em class="fa fa-bars"></em></a>
+                <ul class="nav flex-column" id="nav-slide">
+                    <li class="nav-item"><a class="nav-link active" href="index.html"><em class="fa fa-dashboard"></em>
+                            Ghi chú <span class="sr-only">(current)</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><em class="fa fa-calendar-o"></em>
+                            Lời nhắc</a></li>
+                    <span id="li-listTagNote"></span>
+                    <li class="nav-item"><a class="nav-link" id="moChinhSuaNhan" href="#"><em
+                                class="fa fa-bar-chart"></em> Chỉnh sửa nhãn</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><em class="fa fa-hand-o-up"></em> Lưu
+                            trữ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><em class="fa fa-pencil-square-o"></em> Thùng
+                            rác</a></li>
+                </ul>
+            </nav>
+            <main class="col-xs-12 col-sm-8 col-lg-9 col-xl-10 pt-3 pl-4 ml-auto">
+                <header class="page-header row justify-center">
+                    <div class="col-md-6 col-lg-8">
+                        <h1 class="float-left text-center text-md-left">Ghi chú</h1>
+                    </div>
+                    <div class="dropdown user-dropdown col-md-6 col-lg-4 text-center text-md-right">
+                        <a class="btn btn-stripped dropdown-toggle" href="#" id="dropdownMenuLink"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="images/profile-pic.jpg" alt="profile photo"
+                                class="circle float-left profile-photo" width="50" height="auto">
+                            <div class="username mt-1">
+                                <h4 class="mb-1">Username</h4>
+                                <h6 class="text-muted">Super Admin</h6>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" style="margin-right: 1.5rem;"
+                            aria-labelledby="dropdownMenuLink"><a class="dropdown-item" href="#"><em
+                                    class="fa fa-user-circle mr-1"></em> View Profile</a>
+                            <a class="dropdown-item" href="#"><em class="fa fa-sliders mr-1"></em> Preferences</a>
+                            <a class="dropdown-item" href="#"><em class="fa fa-power-off mr-1"></em> Logout</a>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </header>
+                <section class="row">
+                    <div class="col-sm-12">
+                        <section class="container" id="phanBenNgoai">
+                            <div class="row justify-content-md-center">
+                                <div class="col-8 input-group mb-3 custom-input">
+                                    <input type="text" class="form-control b-0" placeholder="Tạo ghi chú..."
+                                        id="batDauNhap">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg-white b-0"><i
+                                                class="fa fa-check-square text-dark"></i></span>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg-white b-0"><i
+                                                class="fa fa-pencil text-dark"></i></span>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg-white b-0">
+                                            <i class="fa fa-image text-dark"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="container-fluid" id="phanBenTrong">
+                            <div class="row justify-content-md-center">
+                                <div class="col-10 custom-input">
+                                    <div class="container-fluid">
+                                        <div class="row input-group mb-3 mt-3">
+                                            <textarea type="text" class="form-control b-0" placeholder="Tiêu đề"
+                                                id="tieuDe" name="tieuDe" rows="1" cols="50"></textarea>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text bg-white b-0">
+                                                    <i class="fa fa-thumb-tack text-dark"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <textarea type="text" class="b-0 form-control" id="noiDung"
+                                                placeholder="Tạo ghi chú..."></textarea>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-10 d-flex flex-row">
+                                                <button class="custom-button-o mr-2"><i class="fa fa-plus mt-1"
+                                                        title="Thêm"></i></button>
+                                                <button class="custom-button-o mr-2" onclick="moThemSuaNhan()"
+                                                    title=""><i class="fa fa-tag mt-1"></i></button>
+                                                <button class="custom-button-o mr-2"><i
+                                                        class="fa fa-rotate-left"></i></button>
+                                                <button class="custom-button-o mr-2"><i
+                                                        class="fa fa-rotate-right"></i></button>
+                                            </div>
+                                            <div class="col-md-2 d-flex flex-row-reverse">
+                                                <button class="btn btn-tran" id="btnKetThucNhap">Đóng</button>
+                                            </div>
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <br>
+                        <section class="container-fluid">
+                            <div class="row" id="listNote"></div>
+                        </section>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="dist/js/bootstrap.min.js"></script>
+
+    <script src="js/chart.min.js"></script>
+    <script src="js/chart-data.js"></script>
+    <script src="js/easypiechart.js"></script>
+    <script src="js/easypiechart-data.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
+    <script src="js/custom.js"></script>
+    <script>
+        var TempTag = [];
+        function loadNote() {
+            var listTagNoteTemp = [];
+            var listTagNoteIdTemp = [];
+            $.ajax({
+                url: "/note/list",
+                method: "GET",
+                contentType: "application/json; charset=UTF-8",
+                success: function (data) {
+                    $("#listNote").empty();
+                    for (let i = 0; i < data.length; i++) {
+                        $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right"><button onclick="moChinhSuaNote(` + data[i].id + `)" class="custom-button-o-small mr-2"><i
+                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><input class="form-control b-0" value="` + data[i].content + `"></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
+                            + `</div></div></div>`);
+                        for (let j = 0; j < data[i].tagNoteId.length; j++) {
+                            if (!listTagNoteIdTemp.includes(data[i].tagNoteId[j])) {
+                                $.ajax({
+                                    url: "/tagnote/" + data[i].tagNoteId[j],
+                                    method: "GET",
+                                    success: function (datatagnote) {
+                                        console.log(datatagnote);
+                                        listTagNoteTemp.push(datatagnote);
+                                        listTagNoteIdTemp.push(datatagnote.id);
+                                        $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-primary">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '<button class="btn-mini"' + ' onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
+                                    },
+                                    fail: function () { }
+                                });
+                            }
+                            else
+                                $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-primary">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '<button class="btn-mini"' + ' onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadAllTagNote() {
+            $.ajax({
+                url: "/tagnote/list",
+                method: "GET",
+                contentType: "application/json; charset=UTF-8",
+                success: function (data) {
+                    console.log(data);
+                    $(".taglist-item").remove();
+                    $("#phanChinhSuaTag").empty();
+                    // $("#selectTag").empty();
+                    $("#selectTag").append('<option value=0 selected>Chọn 1 tag bất kỳ</option>');
+                    for (let i = 0; i < data.length; i++) {
+                        console.log(data[i]);
+                        $("#moChinhSuaNhan").before('<li class="nav-item taglist-item" onclick="openKeep(' + data[i].id + ')"><a class="nav-link" href="#" id="li' + data[i].id + '"><em class="fa fa-tag pr-1"></em> ' + data[i].title + '</a></li>');
+                        $("#phanChinhSuaTag").append('<div class="row input-group p-0 m-0 rowTagNote">\n' +
+                            '<div class="input-group-prepend">\n' +
+                            '<span class="input-group-text bg-white b-0 pt-0 pb-0">\n' +
+                            '<p class="text-dark fw-bolder pt-2" onclick="deleteTagNote(' + data[i].id + ')"><i class="fa fa-trash text-dark"\n' +
+                            'id="d' + data[i].id + '"></i></p></span></div>\n' +
+                            '<input type="text" class="form-control b-0 input-group-text text-left" placeholder="" id="i' + data[i].id + '" value="' + data[i].title + '"\n' +
+                            '<div class="input-group-append">\n' +
+                            '<span class="input-group-text bg-white b-0 pt-0 p-b-0">\n' +
+                            '<i class="fa fa-check text-dark suatag" onclick="editTagNote(' + data[i].id + ')"></i></span></div></div>');
+                        $("#selectTag").append('<option value=' + data[i].id + '>' + data[i].title + '</option>');
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $("#phanBenTrong").hide();
+            loadNote();
+            loadAllTagNote();
+            genModalChinhSuaNhan("modalChinhSuaNhan", "moChinhSuaNhan", "dongChinhSuaNhan", "hoanThanhChinhSuaNhan");
+            $("#batDauNhap").click(function () {
+                $("#phanBenTrong").show();
+                $("#phanBenNgoai").hide();
+                $("#noiDung").focus();
+            });
+            $("#btnKetThucNhap").click(function () {
+                let tieuDe = $("#tieuDe").val();
+                const noiDung = $("#noiDung").val();
+                var tag = [];
+                if (tieuDe !== "" || noiDung !== "") {
+                    for (let i = 0; i < TempTag.length; i++) {
+                        if (TempTag[i].isSelected) {
+                            tag.push(TempTag[i].id);
+                        }
+                    }
+                    if (noiDung !== "" && tieuDe === "") tieuDe = "Không có tiêu đề";
+                    let note = {
+                        id: -1,
+                        title: tieuDe,
+                        content: noiDung,
+                        tagNoteId: tag
+                    };
+                    console.log(note);
+                    $.ajax({
+                        url: "/note",
+                        method: "POST",
+                        contentType: "application/json; charset=UTF-8",
+                        data: JSON.stringify(note)
+                    }).done(function () {
+                        console.log("Thêm thành công");
+                        loadNote()
+                    }).fail(function () {
+                        console.log("Thêm thất bại");
+                    });
+                }
+                $("#tieuDe").val("");
+                $("#noiDung").val("");
+                $("#phanBenTrong").hide();
+                $("#phanBenNgoai").show();
+            });
+        });
+
+        function genModalChinhSuaNhan(idModal, idOpen, idClose, idCreate) {
+            var modal = document.getElementById(idModal);
+            $("#" + idOpen).click(function () {
+                modal.style.display = "block";
+                $("#nhanMoi").focus();
+                loadAllTagNote();
+            });
+            $("#" + idClose).click(function () {
+                $("#nhanMoi").val("");
+                modal.style.display = "none";
+            });
+            $("#" + idCreate).click(function () {
+
+                const newTagNote = $("#nhanMoi").val();
+                if (newTagNote !== "") {
+                    // $("#moChinhSua").before('<li class="nav-item"><a class="nav-link text-black" href="#"><em class="fa fa-tag"></em> ' + $("#nhanMoi").val() + '</a></li>');
+                    const data = {
+                        id: -1,
+                        title: newTagNote
+                    }
+                    $.ajax({
+                        url: "/tagnote",
+                        method: "POST",
+                        contentType: "application/json; charset=UTF-8",
+                        data: JSON.stringify(data),
+                        success: function () {
+                            loadAllTagNote();
+                        }
+                    });
+                }
+                $("#nhanMoi").val("");
+                modal.style.display = "none";
+            });
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        }
+        function taoNhanMoi(modal) {
+            const newTagNote = $("#nhanMoi").val();
+            if (newTagNote !== "") {
+                // $("#moChinhSua").before('<li class="nav-item"><a class="nav-link text-black" href="#"><em class="fa fa-tag"></em> ' + $("#nhanMoi").val() + '</a></li>');
+                const data = {
+                    id: -1,
+                    title: newTagNote
+                }
+                $.ajax({
+                    url: "/tagnote",
+                    method: "POST",
+                    contentType: "application/json; charset=UTF-8",
+                    data: JSON.stringify(data),
+                    success: function () {
+                        loadAllTagNote();
+                    }
+                });
+            }
+            $("#nhanMoi").val("");
+            modal.style.display = "none";
+        }
+        //xóa nhãn
+        function deleteTagNote(id) {
+            $.ajax({
+                url: "/tagnote/" + id,
+                method: "DELETE",
+                contentType: "application/json; charset=UTF-8",
+                success: function () {
+                    loadAllTagNote();
+                }
+            });
+        }
+        //sửa nhãn
+        function editTagNote(id) {
+            const newtitle = $("#i" + id).val();
+            data = {
+                id: id,
+                title: newtitle
+            }
+            $.ajax({
+                url: "/tagnote",
+                method: "PUT",
+                contentType: "application/json; charset=UTF-8",
+                data: JSON.stringify(data),
+                success: function () {
+                    loadAllTagNote();
+                }
+            });
+        }
+        //modal thêm nhãn vào ghi chú
+        function moThemSuaNhan() {
+            var modal = document.getElementById("modalThemSuaNhan");
+            modal.style.display = "block";
+            $("#phanThemSuaNhan").empty();
+            var taglist = [];
+            var tag = [];
+            TempTag = [];
+            $.ajax({
+                url: "/tagnote/list",
+                method: "GET",
+                success: function (data) {
+                    console.log(data);
+                    modal.style.display = "block";
+                    for (let i = 0; i < data.length; i++) {
+                        const o = {
+                            id: data[i].id,
+                            title: data[i].title,
+                            isSelected: false
+                        }
+                        taglist.push(o);
+                        $("#phanThemSuaNhan").append('<div class="col-3 form-check">'
+                            + '<input class="form-check-input" type="checkbox" value="" id="c' + o.id + '">'
+                            + '<p class="form-check-label" for="c' + o.id + '">'
+                            + o.title + '</p></div>');
+                    }
+                }
+            });
+            $(".hoanThanhThemSuaNhan").unbind("click");
+            $(".hoanThanhThemSuaNhan").click(function () {
+                var modal = document.getElementById("modalThemSuaNhan");
+                modal.style.display = "none";
+                for (let i = 0; i < taglist.length; i++) {
+                    if ($("#c" + taglist[i].id).is(":checked")) {
+                        taglist[i].isSelected = true;
+                    }
+                    else {
+                        taglist[i].isSelected = false;
+                    }
+                }
+                TempTag = taglist;
+                loadTagSelected();
+            });
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        }
+        //modal chỉnh sửa ghi chú
+        function moChinhSuaNote(id) {
+            var modal = document.getElementById("modalChinhSuaGhiChu");
+            var tag = [];
+            TempTag = [];
+            loadTempTagFromDB(id);
+            $.ajax({
+                url: "/note/" + id,
+                method: "GET",
+                success: function (data) {
+                    console.log(data);
+                    modal.style.display = "block";
+                    $("#titleSuaGhiChu").val(data.title);
+                    $("#contentSuaGhiChu").val(data.content);
+                    for (let i = 0; i < data.tagNoteId.length; i++) {
+                        tag.push(data.tagNoteId[i]);
+                    }
+                }
+            });
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            $(".hoanThanhChinhSuaGhiChu").unbind("click");
+            $(".hoanThanhChinhSuaGhiChu").click(function () {
+                var modal = document.getElementById("modalChinhSuaGhiChu");
+                modal.style.display = "none";
+                tag = [];
+                for (let i = 0; i < TempTag.length; i++) {
+                    if (TempTag[i].isSelected) {
+                        tag.push(TempTag[i].id);
+                    }
+                }
+                const data = {
+                    id: id,
+                    title: $("#titleSuaGhiChu").val(),
+                    content: $("#contentSuaGhiChu").val(),
+                    tagNoteId: tag
+                }
+                $.ajax({
+                    url: "/note",
+                    method: "PUT",
+                    contentType: "application/json; charset=UTF-8",
+                    data: JSON.stringify(data),
+                    success: function () {
+                        loadNote();
+                        $("#titleSuaGhiChu").val("");
+                        $("#contentSuaGhiChu").val("");
+                    },
+                    fail: function () {
+                        $("#titleSuaGhiChu").val("");
+                        $("#contentSuaGhiChu").val("");
+                    }
+                });
+            });
+            $("#btnThemSuaNhan").unbind("click");
+            $("#btnThemSuaNhan").click(function () {
+                var modal = document.getElementById("modalThemSuaNhan");
+                modal.style.display = "block";
+                $("#phanThemSuaNhan").empty();
+                var taglist = [];
+                $.ajax({
+                    url: "/tagnote/list",
+                    method: "GET",
+                    success: function (data) {
+                        console.log(data);
+                        modal.style.display = "block";
+                        for (let i = 0; i < data.length; i++) {
+                            if (tag.includes(data[i].id)) {
+                                const o = {
+                                    id: data[i].id,
+                                    title: data[i].title,
+                                    isSelected: true
+                                }
+                                taglist.push(o);
+                                $("#phanThemSuaNhan").append('<div class="col-3 form-check">'
+                                    + '<input class="form-check-input" type="checkbox" value="" checked id="c' + o.id + '">'
+                                    + '<p class="form-check-label" for="c' + o.id + '">'
+                                    + o.title + '</p></div>');
+                            }
+                            else {
+                                const o = {
+                                    id: data[i].id,
+                                    title: data[i].title,
+                                    isSelected: false
+                                }
+                                taglist.push(o);
+                                $("#phanThemSuaNhan").append('<div class="col-3 form-check">'
+                                    + '<input class="form-check-input" type="checkbox" value="" id="c' + o.id + '">'
+                                    + '<p class="form-check-label" for="c' + o.id + '">'
+                                    + o.title + '</p></div>');
+                            }
+                        }
+                    }
+                });
+                $(".hoanThanhThemSuaNhan").unbind("click");
+                $(".hoanThanhThemSuaNhan").click(function () {
+                    var modal = document.getElementById("modalThemSuaNhan");
+                    modal.style.display = "none";
+                    for (let i = 0; i < taglist.length; i++) {
+                        if ($("#c" + taglist[i].id).is(":checked")) {
+                            taglist[i].isSelected = true;
+                        }
+                        else {
+                            taglist[i].isSelected = false;
+                        }
+                    }
+                    TempTag = [];
+                    TempTag = taglist;
+                    loadTagSelected();
+                });
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+            })
+        }
+        //nạp dữ nhãn vào TempTag từ database rồi đưa ra phanBenTrong
+        function loadTempTagFromDB(noteid) {
+            var listTagId = [];
+            // var listTagNote = [];
+            TempTag = [];
+            $("#currentTagSelected").empty();
+            $.ajax({
+                url: "/note/" + noteid,
+                method: "GET",
+                success: function (data) {
+                    console.log(data);
+                    for (let i = 0; i < data.tagNoteId.length; i++) {
+                        listTagId.push(data.tagNoteId[i]);
+                        $.ajax({
+                            url: "/tagnote/" + data.tagNoteId[i],
+                            method: "GET",
+                            success: function (dataTag) {
+                                TempTag.push({ id: dataTag.id, title: dataTag.title, isSelected: true });
+                                $("#currentTagSelected").append('<nav class="ml-2 pl-2 pr-2 mini-nav bg-primary">' + dataTag.title + '</nav>')
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        //nạp dữ liệu của TempTag vào phanBenTrong
+        function loadTagSelected() {
+            $("#currentTagSelected").empty();
+            for (let i = 0; i < TempTag.length; i++) {
+                $("#currentTagSelected").append('<nav class="ml-2 pl-2 pr-2 mini-nav bg-primary">' + TempTag[i].title + '</nav>')
+            }
+        }
+        //xóa nhãn khỏi ghi chú
+        function removeTagNotefromTag(noteid, tagNoteId) {
+            console.log(noteid);
+            var m = document.getElementById("modalChinhSuaGhiChu")
+            m.style.display = "none";
+            $.ajax({
+                url: "/note/removetagnoteid/" + tagNoteId,
+                method: "PUT",
+                contentType: "application/json; charset=UTF-8",
+                data: JSON.stringify(noteid),
+                success: function () {
+                    loadNote();
+                }
+            });
+        }
+        //chuyển tab theo nhãn
+        function openKeep(tagNoteId) {
+            console.log(tagNoteId);
+            var listTagNoteTemp = [];
+            var listTagNoteIdTemp = [];
+            $.ajax({
+                url: "/note/list/" + tagNoteId,
+                method: "GET",
+                success: function (data) {
+                    $("#listNote").empty();
+                    for (let i = 0; i < data.length; i++) {
+                        $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right"><button onclick="moChinhSuaNote(` + data[i].id + `)" class="custom-button-o-small mr-2"><i
+                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><input class="form-control b-0" value="` + data[i].content + `"></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
+                            + `</div></div></div>`);
+                        for (let j = 0; j < data[i].tagNoteId.length; j++) {
+                            if (!listTagNoteIdTemp.includes(data[i].tagNoteId[j])) {
+                                $.ajax({
+                                    url: "/tagnote/" + data[i].tagNoteId[j],
+                                    method: "GET",
+                                    success: function (datatagnote) {
+                                        console.log(datatagnote);
+                                        listTagNoteTemp.push(datatagnote);
+                                        listTagNoteIdTemp.push(datatagnote.id);
+                                        $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-primary">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '<button class="btn-mini"' +
+                                            +'onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
+                                    },
+                                    fail: function () { }
+                                });
+                            }
+                            else
+                                $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-primary">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '<button class="btn-mini"' + 'onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="js/modal-action.js"></script>
+
+</body>
+
+</html>
