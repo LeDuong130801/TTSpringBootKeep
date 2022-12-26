@@ -163,7 +163,7 @@
                             placeholder="Tạo nhãn mới" id="nhanMoi">
                         <div class="input-group-append">
                             <span class="input-group-text bg-white b-0 pt-0 pb-0">
-                                <i class="fa fa-check text-dark" id="hoanThanhChinhSuaNhan"></i></span>
+                                <i class="fa fa-check text-dark " id="hoanThanhChinhSuaNhan"></i></span>
                         </div>
                     </div>
                     <span id="phanChinhSuaTag">
@@ -180,15 +180,16 @@
                     <h3 class="modal-title"><input type="text" id="titleSuaGhiChu" class="form-control b-0 text-title">
                     </h3>
                     <div class="row input-group m-0 p-0" id="phanSuaNote">
-                        <input type="text" class="form-control b-0 text-left" id="contentSuaGhiChu">
+                        <textarea type="text" class="form-control b-0 text-left" id="contentSuaGhiChu" cols="50"
+                            rows="3"></textarea>
                     </div>
                     <div class="modal-footer p-0">
-                            <div class="row" id="currentTagSelected">
+                        <div class="row" id="currentTagSelected">
 
-                            </div>
-                            <button class="custom-button-o mr-2" id="btnThemSuaNhan" title=""><i
-                                    class="fa fa-tag mt-1"></i></button>
-                            <button type="button" class="btn btn-tran hoanThanhChinhSuaGhiChu">Đóng</button>
+                        </div>
+                        <button class="custom-button-o mr-2" id="btnThemSuaNhan" title=""><i
+                                class="fa fa-tag mt-1"></i></button>
+                        <button type="button" class="btn btn-tran hoanThanhChinhSuaGhiChu">Đóng</button>
                     </div>
                 </div>
             </div>
@@ -201,6 +202,24 @@
                     </div>
                     <div class="modal-footer p-0">
                         <button type="button" class="btn btn-tran hoanThanhThemSuaNhan">Đóng</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" id="modalLogin">
+                <div class="modal-content" style="min-width: 500px;">
+                    <div class="container">
+                        <label for="uname"><b>Tài khoản</b></label><br>
+                        <input type="text" class="form-control" placeholder="Nhập tài khoản" name="uname" id="uname"
+                            required>
+
+                        <label for="psw"><b>Mật khẩu</b></label><br>
+                        <input type="password" class="form-control" placeholder="Nhập mật khẩu" name="psw" id="psw"
+                            required>
+                        <br>
+                        <button class="btn btn-success" id="btnLogin" onclick="LoginNow()">Đăng nhập</button>
+                        <label>
+                            <input type="checkbox" checked="checked" name="remember" id="remember"> Nhớ mật khẩu
+                        </label>
                     </div>
                 </div>
             </div>
@@ -236,8 +255,8 @@
                             <img src="images/profile-pic.jpg" alt="profile photo"
                                 class="circle float-left profile-photo" width="50" height="auto">
                             <div class="username mt-1">
-                                <h4 class="mb-1">Username</h4>
-                                <h6 class="text-muted">Super Admin</h6>
+                                <h4 class="mb-1" id="usernamebox">Username</h4>
+                                <h6 class="text-muted" onclick="LogOut()">Log out</h6>
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" style="margin-right: 1.5rem;"
@@ -284,8 +303,11 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <textarea type="text" class="b-0 form-control" id="noiDung"
-                                                placeholder="Tạo ghi chú..."></textarea>
+                                            <textarea type="text" class="b-0 form-control" id="noiDung" cols="50"
+                                                rows="3" placeholder="Tạo ghi chú..."></textarea>
+                                        </div>
+                                        <div class="row" id="nhanCuaGhiChuMoi">
+
                                         </div>
                                         <div class="row">
                                             <div class="col-md-10 d-flex flex-row">
@@ -327,24 +349,35 @@
     <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/custom.js"></script>
     <script>
+        var userid = null;
         var TempTag = [];
+        var currentTag = null;
         function loadNote() {
+            if(userid===null){
+                return;
+            }
+            if (currentTag !== null) {
+                openKeep(currentTag);
+                return;
+            }
             var listTagNoteTemp = [];
             var listTagNoteIdTemp = [];
             $.ajax({
-                url: "/note/list",
+                url: "/note/"+userid+"/list",
                 method: "GET",
                 contentType: "application/json; charset=UTF-8",
+                async: true,
                 success: function (data) {
                     $("#listNote").empty();
                     for (let i = 0; i < data.length; i++) {
+                        data[i].content = data[i].content.replace("\n", "<br>");
                         $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right"><button onclick="moChinhSuaNote(` + data[i].id + `)" class="custom-button-o-small mr-2"><i
-                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><input class="form-control b-0" value="` + data[i].content + `"></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
+                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
                             + `</div></div></div>`);
                         for (let j = 0; j < data[i].tagNoteId.length; j++) {
                             if (!listTagNoteIdTemp.includes(data[i].tagNoteId[j])) {
                                 $.ajax({
-                                    url: "/tagnote/" + data[i].tagNoteId[j],
+                                    url: "/tagnote/"+userid+"/" + data[i].tagNoteId[j],
                                     method: "GET",
                                     success: function (datatagnote) {
                                         console.log(datatagnote);
@@ -364,10 +397,14 @@
         }
 
         function loadAllTagNote() {
+            if(userid===null){
+                return;
+            }
             $.ajax({
-                url: "/tagnote/list",
+                url: "/tagnote/"+userid+"/list",
                 method: "GET",
                 contentType: "application/json; charset=UTF-8",
+                async: true,
                 success: function (data) {
                     console.log(data);
                     $(".taglist-item").remove();
@@ -386,20 +423,21 @@
                             '<div class="input-group-append">\n' +
                             '<span class="input-group-text bg-white b-0 pt-0 p-b-0">\n' +
                             '<i class="fa fa-check text-dark suatag" onclick="editTagNote(' + data[i].id + ')"></i></span></div></div>');
-                        $("#selectTag").append('<option value=' + data[i].id + '>' + data[i].title + '</option>');
+                        // $("#selectTag").append('<option value=' + data[i].id + '>' + data[i].title + '</option>');
                     }
                 }
             });
         }
-
         $(document).ready(function () {
             $("#phanBenTrong").hide();
+            loadLocalAccount();
             loadNote();
             loadAllTagNote();
             genModalChinhSuaNhan("modalChinhSuaNhan", "moChinhSuaNhan", "dongChinhSuaNhan", "hoanThanhChinhSuaNhan");
             $("#batDauNhap").click(function () {
                 $("#phanBenTrong").show();
                 $("#phanBenNgoai").hide();
+                loadTempTagFromDB(null);
                 $("#noiDung").focus();
             });
             $("#btnKetThucNhap").click(function () {
@@ -417,11 +455,12 @@
                         id: -1,
                         title: tieuDe,
                         content: noiDung,
-                        tagNoteId: tag
+                        tagNoteId: tag,
+                        userid: userid
                     };
                     console.log(note);
                     $.ajax({
-                        url: "/note",
+                        url: "/note/"+userid,
                         method: "POST",
                         contentType: "application/json; charset=UTF-8",
                         data: JSON.stringify(note)
@@ -438,7 +477,25 @@
                 $("#phanBenNgoai").show();
             });
         });
+        function loadLocalAccount() {
+            const u = localStorage.getItem("ttspringbootu");
+            const p = localStorage.getItem("ttspringbootp");
+            console.log(u, p);
+            if (u !== "" && u!==null) {
+                console.log("login")
+                processLogin(u, p);
+            }
+            else openLogin();
+        }
 
+
+        function huyThemGhiChu() {
+            TempTag = [];
+            $("#tieuDe").val("");
+            $("#noiDung").val("");
+            $("#phanBenTrong").hide();
+            $("#phanBenNgoai").show();
+        }
         function genModalChinhSuaNhan(idModal, idOpen, idClose, idCreate) {
             var modal = document.getElementById(idModal);
             $("#" + idOpen).click(function () {
@@ -450,17 +507,18 @@
                 $("#nhanMoi").val("");
                 modal.style.display = "none";
             });
-            $("#" + idCreate).click(function () {
+            $("." + idCreate).click(function () {
 
                 const newTagNote = $("#nhanMoi").val();
                 if (newTagNote !== "") {
                     // $("#moChinhSua").before('<li class="nav-item"><a class="nav-link text-black" href="#"><em class="fa fa-tag"></em> ' + $("#nhanMoi").val() + '</a></li>');
                     const data = {
                         id: -1,
-                        title: newTagNote
+                        title: newTagNote,
+                        userid: userid
                     }
                     $.ajax({
-                        url: "/tagnote",
+                        url: "/tagnote/"+userid,
                         method: "POST",
                         contentType: "application/json; charset=UTF-8",
                         data: JSON.stringify(data),
@@ -471,6 +529,29 @@
                 }
                 $("#nhanMoi").val("");
                 modal.style.display = "none";
+            });
+            $("#" + idCreate).click(function () {
+
+                const newTagNote = $("#nhanMoi").val();
+                if (newTagNote !== "") {
+                    // $("#moChinhSua").before('<li class="nav-item"><a class="nav-link text-black" href="#"><em class="fa fa-tag"></em> ' + $("#nhanMoi").val() + '</a></li>');
+                    const data = {
+                        id: -1,
+                        title: newTagNote,
+                        userid: userid
+                    }
+                    $.ajax({
+                        url: "/tagnote/"+userid,
+                        method: "POST",
+                        contentType: "application/json; charset=UTF-8",
+                        data: JSON.stringify(data),
+                        success: function () {
+                            loadAllTagNote();
+                        }
+                    });
+                }
+                loadAllTagNote();
+                $("#nhanMoi").val("");
             });
             window.onclick = function (event) {
                 if (event.target == modal) {
@@ -484,10 +565,11 @@
                 // $("#moChinhSua").before('<li class="nav-item"><a class="nav-link text-black" href="#"><em class="fa fa-tag"></em> ' + $("#nhanMoi").val() + '</a></li>');
                 const data = {
                     id: -1,
-                    title: newTagNote
+                    title: newTagNote,
+                    userid: userid
                 }
                 $.ajax({
-                    url: "/tagnote",
+                    url: "/tagnote/"+userid,
                     method: "POST",
                     contentType: "application/json; charset=UTF-8",
                     data: JSON.stringify(data),
@@ -501,24 +583,27 @@
         }
         //xóa nhãn
         function deleteTagNote(id) {
+            if(window.confirm("Xóa nhãn này khỏi tất cả ghi chú?")==true){
             $.ajax({
-                url: "/tagnote/" + id,
+                url: "/tagnote/"+userid+"/" + id,
                 method: "DELETE",
                 contentType: "application/json; charset=UTF-8",
                 success: function () {
                     loadAllTagNote();
                 }
             });
+            }
         }
         //sửa nhãn
         function editTagNote(id) {
             const newtitle = $("#i" + id).val();
             data = {
                 id: id,
-                title: newtitle
+                title: newtitle,
+                userid: userid
             }
             $.ajax({
-                url: "/tagnote",
+                url: "/tagnote/"+userid,
                 method: "PUT",
                 contentType: "application/json; charset=UTF-8",
                 data: JSON.stringify(data),
@@ -532,43 +617,21 @@
             var modal = document.getElementById("modalThemSuaNhan");
             modal.style.display = "block";
             $("#phanThemSuaNhan").empty();
-            var taglist = [];
-            var tag = [];
-            TempTag = [];
-            $.ajax({
-                url: "/tagnote/list",
-                method: "GET",
-                success: function (data) {
-                    console.log(data);
-                    modal.style.display = "block";
-                    for (let i = 0; i < data.length; i++) {
-                        const o = {
-                            id: data[i].id,
-                            title: data[i].title,
-                            isSelected: false
-                        }
-                        taglist.push(o);
-                        $("#phanThemSuaNhan").append('<div class="col-3 form-check">'
-                            + '<input class="form-check-input" type="checkbox" value="" id="c' + o.id + '">'
-                            + '<p class="form-check-label" for="c' + o.id + '">'
-                            + o.title + '</p></div>');
-                    }
-                }
-            });
+            console.log(TempTag);
+            loadTagSelected();
             $(".hoanThanhThemSuaNhan").unbind("click");
             $(".hoanThanhThemSuaNhan").click(function () {
                 var modal = document.getElementById("modalThemSuaNhan");
                 modal.style.display = "none";
-                for (let i = 0; i < taglist.length; i++) {
-                    if ($("#c" + taglist[i].id).is(":checked")) {
-                        taglist[i].isSelected = true;
+                loadTagSelected();
+                for (let i = 0; i < TempTag.length; i++) {
+                    if ($("#c" + TempTag[i].id).is(":checked")) {
+                        TempTag[i].isSelected = true;
                     }
                     else {
-                        taglist[i].isSelected = false;
+                        TempTag[i].isSelected = false;
                     }
                 }
-                TempTag = taglist;
-                loadTagSelected();
             });
             window.onclick = function (event) {
                 if (event.target == modal) {
@@ -578,12 +641,13 @@
         }
         //modal chỉnh sửa ghi chú
         function moChinhSuaNote(id) {
+            huyThemGhiChu();
             var modal = document.getElementById("modalChinhSuaGhiChu");
             var tag = [];
             TempTag = [];
             loadTempTagFromDB(id);
             $.ajax({
-                url: "/note/" + id,
+                url: "/note/"+userid+"/" + id,
                 method: "GET",
                 success: function (data) {
                     console.log(data);
@@ -602,6 +666,7 @@
             }
             $(".hoanThanhChinhSuaGhiChu").unbind("click");
             $(".hoanThanhChinhSuaGhiChu").click(function () {
+                console.log(TempTag);
                 var modal = document.getElementById("modalChinhSuaGhiChu");
                 modal.style.display = "none";
                 tag = [];
@@ -614,10 +679,11 @@
                     id: id,
                     title: $("#titleSuaGhiChu").val(),
                     content: $("#contentSuaGhiChu").val(),
-                    tagNoteId: tag
+                    tagNoteId: tag,
+                    userid: userid
                 }
                 $.ajax({
-                    url: "/note",
+                    url: "/note/"+userid,
                     method: "PUT",
                     contentType: "application/json; charset=UTF-8",
                     data: JSON.stringify(data),
@@ -636,56 +702,12 @@
             $("#btnThemSuaNhan").click(function () {
                 var modal = document.getElementById("modalThemSuaNhan");
                 modal.style.display = "block";
-                $("#phanThemSuaNhan").empty();
-                var taglist = [];
-                $.ajax({
-                    url: "/tagnote/list",
-                    method: "GET",
-                    success: function (data) {
-                        console.log(data);
-                        modal.style.display = "block";
-                        for (let i = 0; i < data.length; i++) {
-                            if (tag.includes(data[i].id)) {
-                                const o = {
-                                    id: data[i].id,
-                                    title: data[i].title,
-                                    isSelected: true
-                                }
-                                taglist.push(o);
-                                $("#phanThemSuaNhan").append('<div class="col-3 form-check">'
-                                    + '<input class="form-check-input" type="checkbox" value="" checked id="c' + o.id + '">'
-                                    + '<p class="form-check-label" for="c' + o.id + '">'
-                                    + o.title + '</p></div>');
-                            }
-                            else {
-                                const o = {
-                                    id: data[i].id,
-                                    title: data[i].title,
-                                    isSelected: false
-                                }
-                                taglist.push(o);
-                                $("#phanThemSuaNhan").append('<div class="col-3 form-check">'
-                                    + '<input class="form-check-input" type="checkbox" value="" id="c' + o.id + '">'
-                                    + '<p class="form-check-label" for="c' + o.id + '">'
-                                    + o.title + '</p></div>');
-                            }
-                        }
-                    }
-                });
+                loadTagSelected();
+                
                 $(".hoanThanhThemSuaNhan").unbind("click");
                 $(".hoanThanhThemSuaNhan").click(function () {
                     var modal = document.getElementById("modalThemSuaNhan");
                     modal.style.display = "none";
-                    for (let i = 0; i < taglist.length; i++) {
-                        if ($("#c" + taglist[i].id).is(":checked")) {
-                            taglist[i].isSelected = true;
-                        }
-                        else {
-                            taglist[i].isSelected = false;
-                        }
-                    }
-                    TempTag = [];
-                    TempTag = taglist;
                     loadTagSelected();
                 });
                 window.onclick = function (event) {
@@ -702,29 +724,54 @@
             TempTag = [];
             $("#currentTagSelected").empty();
             $.ajax({
-                url: "/note/" + noteid,
+                url: "/tagnote/"+userid+"/list",
                 method: "GET",
+                async: true,
                 success: function (data) {
-                    console.log(data);
-                    for (let i = 0; i < data.tagNoteId.length; i++) {
-                        listTagId.push(data.tagNoteId[i]);
+                    for (let i = 0; i < data.length; i++) {
+                        // let o = { id: data[i].id, title: data[i].title, isSelected: true };
+                        TempTag.push({ id: data[i].id, title: data[i].title, isSelected: false });
+                    }
+                    if (noteid !== null)
                         $.ajax({
-                            url: "/tagnote/" + data.tagNoteId[i],
+                            url: "/note/"+userid+"/" + noteid,
                             method: "GET",
-                            success: function (dataTag) {
-                                TempTag.push({ id: dataTag.id, title: dataTag.title, isSelected: true });
-                                $("#currentTagSelected").append('<nav class="ml-2 pl-2 pr-2 mini-nav bg-primary">' + dataTag.title + '</nav>')
+                            success: function (datacheck) {
+                                var listTagUsed = datacheck.tagNoteId;
+                                for (let i = 0; i < TempTag.length; i++) {
+                                    if (listTagUsed.includes(TempTag[i].id)) {
+                                        TempTag[i].isSelected = true;
+                                    }
+                                }
+                                loadTagSelected();
                             }
                         });
-                    }
+                    else
+                        loadTagSelected();
                 }
             });
         }
-        //nạp dữ liệu của TempTag vào phanBenTrong
+        //nạp dữ liệu của TempTag
         function loadTagSelected() {
+            console.log(TempTag);
             $("#currentTagSelected").empty();
+            $("#phanThemSuaNhan").empty();
+            $("#nhanCuaGhiChuMoi").empty();
             for (let i = 0; i < TempTag.length; i++) {
-                $("#currentTagSelected").append('<nav class="ml-2 pl-2 pr-2 mini-nav bg-primary">' + TempTag[i].title + '</nav>')
+                if (TempTag[i].isSelected) {
+                    $("#currentTagSelected").append('<nav class="ml-2 pl-2 pr-2 mini-nav bg-primary">' + TempTag[i].title + '</nav>');
+                    $("#phanThemSuaNhan").append('<div class="col-3 form-check">'
+                        + '<input class="form-check-input" type="checkbox" value="" onclick="changeCheckbox(' + TempTag[i].id + ')" checked id="c' + TempTag[i].id + '">'
+                        + '<p class="form-check-label" for="c' + TempTag[i].id + '">'
+                        + TempTag[i].title + '</p></div>');
+                    $("#nhanCuaGhiChuMoi").append('<nav class="ml-2 pl-2 pr-2 mini-nav bg-primary">' + TempTag[i].title + '</nav>');
+                }
+                else {
+                    $("#phanThemSuaNhan").append('<div class="col-3 form-check">'
+                        + '<input class="form-check-input" type="checkbox" value="" onclick="changeCheckbox(' + TempTag[i].id + ')" id="c' + TempTag[i].id + '">'
+                        + '<p class="form-check-label" for="c' + TempTag[i].id + '">'
+                        + TempTag[i].title + '</p></div>');
+                }
             }
         }
         //xóa nhãn khỏi ghi chú
@@ -742,24 +789,41 @@
                 }
             });
         }
+        function changeCheckbox(cid) {
+            if ($("#c" + cid).is(":checked")) {
+                TempTag.filter(e => {
+                    return e.id === cid;
+                })[0].isSelected = true;
+            }
+            else {
+                TempTag.filter(e => {
+                    return e.id === cid;
+                })[0].isSelected = false;
+            }
+        }
         //chuyển tab theo nhãn
         function openKeep(tagNoteId) {
-            console.log(tagNoteId);
             var listTagNoteTemp = [];
             var listTagNoteIdTemp = [];
+            huyThemGhiChu();
+            currentTag = tagNoteId;
+            if (currentTag === null) {
+                loadNote();
+                return;
+            }
             $.ajax({
-                url: "/note/list/" + tagNoteId,
+                url: "/note/"+userid+"/list/" + tagNoteId,
                 method: "GET",
                 success: function (data) {
                     $("#listNote").empty();
                     for (let i = 0; i < data.length; i++) {
                         $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right"><button onclick="moChinhSuaNote(` + data[i].id + `)" class="custom-button-o-small mr-2"><i
-                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><input class="form-control b-0" value="` + data[i].content + `"></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
+                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
                             + `</div></div></div>`);
                         for (let j = 0; j < data[i].tagNoteId.length; j++) {
                             if (!listTagNoteIdTemp.includes(data[i].tagNoteId[j])) {
                                 $.ajax({
-                                    url: "/tagnote/" + data[i].tagNoteId[j],
+                                    url: "/tagnote/"+userid+"/" + data[i].tagNoteId[j],
                                     method: "GET",
                                     success: function (datatagnote) {
                                         console.log(datatagnote);
@@ -778,8 +842,55 @@
                 }
             });
         }
-    </script>
+        //đăng nhập
+        function openLogin() {
+            var modal = document.getElementById("modalLogin");
+            modal.style.display = "block";
+        }
+        function LoginNow() {
+            const uname = $("#uname").val();
+            console.log(uname);
+            const password = $("#psw").val();
+            processLogin(uname, password);
+        }
 
+        function processLogin(uname, password) {
+            let data = { id: -1, username: uname, password: password }
+            $.ajax({
+                url: "/account",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=UTF-8",
+                method: "PUT",
+                async: true,
+                success: function (data1) {
+                    if (data1 === 0) {
+                        alert("Sai tài khoản hoặc mật khẩu");
+                        openLogin();
+                        return 0;
+                    }
+                    userid = data1;
+                    var modal = document.getElementById("modalLogin");
+                    $("#usernamebox").empty();
+                    $("#usernamebox").append(uname);
+                    modal.style.display = "none";
+                    localStorage.setItem("ttspringbootu", uname);
+                    localStorage.setItem("ttspringbootp", password);
+                    loadNote();
+                    loadAllTagNote();
+                    return 1;
+                },
+                fail: function () {
+                    openLogin();
+                }
+            });
+        }
+        function LogOut(){
+            userid = null;
+            localStorage.setItem("ttspringbootu", "");
+            localStorage.setItem("ttspringbootp", "");
+            location.reload();
+        }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
         integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
         crossorigin="anonymous"></script>

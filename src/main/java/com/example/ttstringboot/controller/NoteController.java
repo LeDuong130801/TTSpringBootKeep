@@ -13,33 +13,33 @@ public class NoteController {
     @Autowired
     NoteService thisService;
 
-    @RequestMapping( value = "/note/{id}", method = RequestMethod.GET)
-    public Note getCustomer(@PathVariable long id){
-        return thisService.get(id);
+    @RequestMapping( value = "/note/{userid}/{id}", method = RequestMethod.GET)
+    public Note getCustomer(@PathVariable long id, @PathVariable Long userid){
+        return thisService.getByUseridAndId(userid, id);
     }
 
-    @RequestMapping(value="/note/list", method = RequestMethod.GET)
-    public List<Note> getList(){
-        return thisService.getList();
+    @RequestMapping(value="/note/{userid}/list", method = RequestMethod.GET)
+    public List<Note> getList(@PathVariable Long userid){
+        return thisService.getList(userid);
     }
 
-    @RequestMapping(value="/note/{id}", method = RequestMethod.DELETE)
-    public String deleteCustomer(@PathVariable long id){
-        return thisService.remove(id);
+    @RequestMapping(value="/note/{userid}/{id}", method = RequestMethod.DELETE)
+    public String deleteCustomer(@PathVariable long id, @PathVariable Long userid){
+        return thisService.remove(userid, id);
     }
 
-    @RequestMapping(value="/note", method = RequestMethod.POST)
-    public String addCustomer(@RequestBody Note note){
-        return thisService.add(note);
+    @RequestMapping(value="/note/{userid}", method = RequestMethod.POST)
+    public String addCustomer(@RequestBody Note note, @PathVariable Long userid){
+        return thisService.add(userid, note);
     }
 
-    @RequestMapping(value="/note", method = RequestMethod.PUT)
-    public String editCustomer(@RequestBody Note note){
-        return thisService.replace(note);
+    @RequestMapping(value="/note/{userid}", method = RequestMethod.PUT)
+    public String editCustomer(@RequestBody Note note, @PathVariable Long userid){
+        return thisService.replace(userid, note);
     }
-    @RequestMapping(value="/note/list/{tagnote}", method = RequestMethod.GET)
-    public List<Note> getListByTag(@PathVariable long tagnote){
-        return thisService.getListByTag(tagnote);
+    @RequestMapping(value="/note/{userid}/list/{tagnote}", method = RequestMethod.GET)
+    public List<Note> getListByTag(@PathVariable long tagnote, @PathVariable Long userid){
+        return thisService.getListByTag(userid, tagnote);
     }
     @RequestMapping(value = "/note/removetagnoteid/{tagnote}", method = RequestMethod.PUT)
     public Note removeTagofNote(@PathVariable long tagnote, @RequestBody long note){

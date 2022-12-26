@@ -12,28 +12,28 @@ public class TagNoteController {
     @Autowired
     TagNoteService tagNoteService;
 
-    @RequestMapping( value = "/tagnote/{id}", method = RequestMethod.GET)
-    public TagNote get(@PathVariable long id){
-        return tagNoteService.get(id);
+    @RequestMapping( value = "/tagnote/{userid}/{id}", method = RequestMethod.GET)
+    public TagNote get(@PathVariable Long userid,@PathVariable long id){
+        return tagNoteService.getByUseridAndId(userid, id);
     }
 
-    @RequestMapping(value="/tagnote/list", method = RequestMethod.GET)
-    public List<TagNote> getList(){
-        return tagNoteService.getList();
+    @RequestMapping(value="/tagnote/{userid}/list", method = RequestMethod.GET)
+    public List<TagNote> getList(@PathVariable Long userid){
+        return tagNoteService.getList(userid);
     }
 
-    @RequestMapping(value="/tagnote/{id}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable long id){
-        return tagNoteService.remove(id);
+    @RequestMapping(value="/tagnote/{userid}/{id}", method = RequestMethod.DELETE)
+    public String delete(@PathVariable long id, @PathVariable Long userid){
+        return tagNoteService.remove(userid, id);
     }
 
-    @RequestMapping(value="/tagnote", method = RequestMethod.POST)
-    public String add(@RequestBody TagNote tagNote){
-        return tagNoteService.add(tagNote);
+    @RequestMapping(value="/tagnote/{userid}", method = RequestMethod.POST)
+    public String add(@RequestBody TagNote tagNote, @PathVariable Long userid){
+        return tagNoteService.add(userid, tagNote);
     }
 
-    @RequestMapping(value="/tagnote", method = RequestMethod.PUT)
-    public String edit(@RequestBody TagNote tagNote){
-        return tagNoteService.replace(tagNote);
+    @RequestMapping(value="/tagnote/{userid}", method = RequestMethod.PUT)
+    public String edit(@RequestBody TagNote tagNote, @PathVariable Long userid){
+        return tagNoteService.replace(userid, tagNote);
     }
 }

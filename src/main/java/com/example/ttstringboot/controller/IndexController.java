@@ -35,33 +35,33 @@ public class IndexController {
 //        return "<script sync>alert('Vừa truyền vào tên: "+tenCuaBan+"');</script>";
 //    }
 
-    @GetMapping("/findAccount")
-    public void findAccount(@RequestParam(value="username", defaultValue = "")String username,
-                           @RequestParam(value="password", defaultValue = "1")String password){
-        if(listAccount.contains(new Account(username, password))){
-            log.info("Có tài khoản này");
-        }
-        else {
-            log.error("Sai tài khoản hoặc mật khẩu");
-        }
-    }
-    @PostMapping("/createAccount")
-    public void createAccount(@RequestParam(value="username", defaultValue = "")String username,
-                              @RequestParam(value="password", defaultValue = "1")String password){
-        for (Account account : listAccount){
-            if(account.getUsername().equals(username)){
-                log.error("Tài khoản này đã tồn tại");
-                return;
-            }
-        }
-        Account a = new Account(username, password);
-        listAccount.add(a);
-        log.info("Tạo tài khoản thành công");
-    }
-
-    @GetMapping("/list")
-    public Object getAllAccount(){
-        customerService.add(new Customer(0, "test", 6));
-        return customerService.getList();
-    }
+//    @GetMapping("/findAccount")
+//    public void findAccount(@RequestParam(value="username", defaultValue = "")String username,
+//                           @RequestParam(value="password", defaultValue = "1")String password){
+//        if(listAccount.contains(new Account(username, password))){
+//            log.info("Có tài khoản này");
+//        }
+//        else {
+//            log.error("Sai tài khoản hoặc mật khẩu");
+//        }
+//    }
+//    @PostMapping("/createAccount")
+//    public void createAccount(@RequestParam(value="username", defaultValue = "")String username,
+//                              @RequestParam(value="password", defaultValue = "1")String password){
+//        for (Account account : listAccount){
+//            if(account.getUsername().equals(username)){
+//                log.error("Tài khoản này đã tồn tại");
+//                return;
+//            }
+//        }
+//        Account a = new Account(username, password);
+//        listAccount.add(a);
+//        log.info("Tạo tài khoản thành công");
+//    }
+//
+//    @GetMapping("/list")
+//    public Object getAllAccount(){
+//        customerService.add(new Customer(0, "test", 6));
+//        return customerService.getList();
+//    }
 }

@@ -1,15 +1,17 @@
 package com.example.ttstringboot.infras.model;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Account {
-    public Account(String username, String password){
-        this.username = username;
-        this.password = password;
-    }
+    @Id
+    Long id;
     String username;
     String password;
 }

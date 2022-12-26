@@ -12,4 +12,5 @@ public class TagNote {
     @Id
     long id;
     String title;
+    Long userid;
 }

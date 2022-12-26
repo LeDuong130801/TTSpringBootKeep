@@ -1,7 +1,9 @@
 package com.example.ttstringboot.service;
 
 import com.example.ttstringboot.infras.model.Note;
+import com.example.ttstringboot.infras.model.TagNote;
 import com.example.ttstringboot.repository.NoteRepository;
+import com.example.ttstringboot.repository.TagNoteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,27 +17,30 @@ import java.util.Random;
 public class NoteService {
     @Autowired
     NoteRepository thisRepository;
+    @Autowired
+    TagNoteRepository tagNoteRepository;
 
-    public String add(Note obj) {
+    public String add(Long userid, Note obj) {
         long id = 0;
         Random r = new Random();
         while (thisRepository.existsById(id) || id<=0) {
             id = r.nextInt();
         }
         obj.setId(id);
+        obj.setUserid(userid);
         thisRepository.insert(obj);
-        log.info("Added " + id);
+        log.info("Added new note: " + id);
         return "Add new successfully!";
     }
 
-    public String replace(Note obj) {
+    public String replace(Long userid, Note obj) {
         if (thisRepository.existsById(obj.getId())) {
             Optional<Note> o = thisRepository.findById(obj.getId());
             o.get().setTitle(obj.getTitle());
             o.get().setContent(obj.getContent());
             o.get().setTagNoteId(obj.getTagNoteId());
             thisRepository.save(o.get());
-            log.info("Updated " + obj.getId());
+            log.info("Updated note: " + obj.getId());
             return "Update successfully!";
         }
         log.error("Not found " + obj.getId());
@@ -45,9 +50,12 @@ public class NoteService {
     public Note get(long id) {
         return thisRepository.findById(id).get();
     }
+    public Note getByUseridAndId(Long userid, long id) {
+        return thisRepository.findByUseridAndId(userid, id);
+    }
 
-    public String remove(long id) {
-        if (thisRepository.existsById(id)) {
+    public String remove(Long userid, long id) {
+        if (thisRepository.existsByIdAndUserid(userid,id)) {
             thisRepository.deleteById(id);
             log.info("Deleted " + id);
             return "Deleted " + id;
@@ -55,12 +63,39 @@ public class NoteService {
         log.error("Not found " + id);
         return "Not found!";
     }
-
-    public List<Note> getList() {
-        return thisRepository.findAll();
+    private void removeTagNoteDeleted(long id){
+        Note n = thisRepository.findById(id).get();
+        Note nt = n;
+        for(int i=0;i<n.getTagNoteId().size();i++){
+            if(!tagNoteRepository.existsById(n.getTagNoteId().get(i))){
+                n.getTagNoteId().remove(i);
+            }
+        }
+        if(nt.getTagNoteId().equals(n.getTagNoteId())){
+            thisRepository.save(n);
+        }
     }
-    public List<Note> getListByTag(long tagNoteId){
-        return thisRepository.findNoteByTagNoteIdContains(tagNoteId);
+    private void removeTagNoteDeleted(){
+        List<Note> ln = thisRepository.findAll();
+        for(Note n: ln){
+            Note nt = n;
+            for(int i=0;i<n.getTagNoteId().size();i++){
+                if(!tagNoteRepository.existsById(n.getTagNoteId().get(i))){
+                    n.getTagNoteId().remove(i);
+                }
+            }
+            if(nt.getTagNoteId().equals(n.getTagNoteId())){
+                thisRepository.save(n);
+            }
+        }
+    }
+    public List<Note> getList(Long userid) {
+        removeTagNoteDeleted();
+        return thisRepository.findAllByUserid(userid);
+    }
+    public List<Note> getListByTag(Long userid, long tagNoteId){
+        removeTagNoteDeleted();
+        return thisRepository.findAllByUseridAndTagNoteId(userid, tagNoteId);
     }
     public Note removeTagofNote(long tagNoteId, long noteid){
         Note note = thisRepository.findById(noteid).get();

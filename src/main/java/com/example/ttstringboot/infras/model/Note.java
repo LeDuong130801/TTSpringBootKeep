@@ -16,6 +16,7 @@ public class Note {
     String title;
     String content;
     List<Long> tagNoteId;
+    Long userid;
 //    String tagNoteId;
 }
 

@@ -1,5 +1,6 @@
 package com.example.ttstringboot.service;
 
+import com.example.ttstringboot.infras.model.Note;
 import com.example.ttstringboot.infras.model.TagNote;
 import com.example.ttstringboot.infras.model.TagNote;
 import com.example.ttstringboot.repository.TagNoteRepository;
@@ -19,23 +20,24 @@ public class TagNoteService {
     @Autowired
     TagNoteRepository thisRepository;
 
-    public String add(TagNote obj) {
+    public String add(Long userid, TagNote obj) {
         long id = 0;
         Random r = new Random();
         while (thisRepository.existsById(id) || id<=0){
             id = r.nextInt();
         }
+        obj.setUserid(userid);
         obj.setId(id);
         thisRepository.insert(obj);
         log.info("Added "+id);
         return "Add new successfully!";
     }
 
-    public String replace(TagNote obj){
-        if(thisRepository.existsById(obj.getId())){
-            Optional<TagNote> o = thisRepository.findById(obj.getId());
-            o.get().setTitle(obj.getTitle());
-            thisRepository.save(o.get());
+    public String replace(Long userid, TagNote obj){
+        if(thisRepository.existsByUseridAndId(userid, obj.getId())){
+            TagNote o = thisRepository.findByUseridAndId(userid, obj.getId());
+            o.setTitle(obj.getTitle());
+            thisRepository.save(o);
             log.info("Updated "+obj.getId());
             return "Update successfully!";
         }
@@ -46,9 +48,11 @@ public class TagNoteService {
     public TagNote get(long id){
         return thisRepository.findById(id).get();
     }
-
-    public String remove(long id){
-        if(thisRepository.existsById(id)){
+    public TagNote getByUseridAndId(Long userid, long id) {
+        return thisRepository.findByUseridAndId(userid, id);
+    }
+    public String remove(Long userid, long id){
+        if(thisRepository.existsByUseridAndId(userid, id)){
             thisRepository.deleteById(id);
             log.info("Deleted "+id);
             return "Deleted "+id;
@@ -57,7 +61,7 @@ public class TagNoteService {
         return "Not found!";
     }
 
-    public List<TagNote> getList() {
-        return thisRepository.findAll();
+    public List<TagNote> getList(Long userid) {
+        return thisRepository.findAllByUserid(userid);
     }
 }
