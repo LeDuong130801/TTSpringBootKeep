@@ -26,6 +26,8 @@ public class NoteService {
         while (thisRepository.existsById(id) || id<=0) {
             id = r.nextInt();
         }
+        obj.setStoraged(false);
+        obj.setDeleted(false);
         obj.setId(id);
         obj.setUserid(userid);
         thisRepository.insert(obj);
@@ -35,11 +37,11 @@ public class NoteService {
 
     public String replace(Long userid, Note obj) {
         if (thisRepository.existsById(obj.getId())) {
-            Optional<Note> o = thisRepository.findById(obj.getId());
-            o.get().setTitle(obj.getTitle());
-            o.get().setContent(obj.getContent());
-            o.get().setTagNoteId(obj.getTagNoteId());
-            thisRepository.save(o.get());
+            Note o = thisRepository.findByUseridAndId(userid, obj.getId());
+            o.setTitle(obj.getTitle());
+            o.setContent(obj.getContent());
+            o.setTagNoteId(obj.getTagNoteId());
+            thisRepository.save(o);
             log.info("Updated note: " + obj.getId());
             return "Update successfully!";
         }

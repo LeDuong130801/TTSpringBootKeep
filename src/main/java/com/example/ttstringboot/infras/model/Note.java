@@ -17,6 +17,8 @@ public class Note {
     String content;
     List<Long> tagNoteId;
     Long userid;
+//    boolean isStoraged;
+//    boolean isDeleted;
 //    String tagNoteId;
 }
 

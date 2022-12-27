@@ -17,6 +17,7 @@
 
     <!-- Custom styles for this template -->
     <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/dropdown.css">
     <link rel="stylesheet" href="css/modal.css">
     <style>
         body {
@@ -26,6 +27,10 @@
 
         .sidebar {
             z-index: 1;
+        }
+
+        .active {
+            background-color: #5b5eaf !important;
         }
 
         .tr-1-1 {
@@ -57,9 +62,6 @@
             font-size: 18px;
         }
 
-        .nav-link.active {
-            background-color: #7376df !important;
-        }
 
         .nav-link a:hover {
             background-color: rgb(228, 212, 66) !important;
@@ -211,11 +213,11 @@
                         <label for="uname"><b>Tài khoản</b></label><br>
                         <input type="text" class="form-control" placeholder="Nhập tài khoản" name="uname" id="uname"
                             required>
-
+                        <!-- 
                         <label for="psw"><b>Mật khẩu</b></label><br>
                         <input type="password" class="form-control" placeholder="Nhập mật khẩu" name="psw" id="psw"
                             required>
-                        <br>
+                        <br> -->
                         <button class="btn btn-success" id="btnLogin" onclick="LoginNow()">Đăng nhập</button>
                         <label>
                             <input type="checkbox" checked="checked" name="remember" id="remember"> Nhớ mật khẩu
@@ -231,8 +233,9 @@
 
                 <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><em class="fa fa-bars"></em></a>
                 <ul class="nav flex-column" id="nav-slide">
-                    <li class="nav-item"><a class="nav-link active" href="index.html"><em class="fa fa-dashboard"></em>
-                            Ghi chú <span class="sr-only">(current)</span></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#" onclick="openKeep(null)" id="li-all"><em
+                                class="fa fa-dashboard"></em>
+                            Ghi chú</a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><em class="fa fa-calendar-o"></em>
                             Lời nhắc</a></li>
                     <span id="li-listTagNote"></span>
@@ -246,27 +249,26 @@
             </nav>
             <main class="col-xs-12 col-sm-8 col-lg-9 col-xl-10 pt-3 pl-4 ml-auto">
                 <header class="page-header row justify-center">
-                    <div class="col-md-6 col-lg-8">
+                    <div class="col-sm-6 col-md-8 col-lg-9">
                         <h1 class="float-left text-center text-md-left">Ghi chú</h1>
                     </div>
-                    <div class="dropdown user-dropdown col-md-6 col-lg-4 text-center text-md-right">
-                        <a class="btn btn-stripped dropdown-toggle" href="#" id="dropdownMenuLink"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="images/profile-pic.jpg" alt="profile photo"
-                                class="circle float-left profile-photo" width="50" height="auto">
-                            <div class="username mt-1">
-                                <h4 class="mb-1" id="usernamebox">Username</h4>
-                                <h6 class="text-muted" onclick="LogOut()">Log out</h6>
-                            </div>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" style="margin-right: 1.5rem;"
-                            aria-labelledby="dropdownMenuLink"><a class="dropdown-item" href="#"><em
-                                    class="fa fa-user-circle mr-1"></em> View Profile</a>
+
+                    <div class="dropdown col-sm-6 col-md-4 col-lg-3 text-right">
+                        <img src="images/profile-pic.jpg" alt="profile photo"
+                            class="circle float-right profile-photo dropbtn" width="50" height="auto"
+                            onclick="myFunction()">
+
+                        <div id="myDropdown" class="dropdown-content text-left">
+                            <img src="images/profile-pic.jpg" alt="profile photo" class="circle profile-photo dropbtn"
+                                width="50" height="auto" onclick="myFunction()">
+                            <h4 class="mb-1 justify-center" id="usernamebox">Username</h4>
+                            <a class="dropdown-item" href="#"><em class="fa fa-user-circle mr-1"></em> View
+                                Profile</a>
                             <a class="dropdown-item" href="#"><em class="fa fa-sliders mr-1"></em> Preferences</a>
-                            <a class="dropdown-item" href="#"><em class="fa fa-power-off mr-1"></em> Logout</a>
+                            <a class="dropdown-item" onclick="LogOut()" href="#"><em class="fa fa-power-off mr-1"></em>
+                                Logout</a>
                         </div>
                     </div>
-                    <div class="clear"></div>
                 </header>
                 <section class="row">
                     <div class="col-sm-12">
@@ -290,7 +292,7 @@
                                 </div>
                             </div>
                         </section>
-                        <section class="container-fluid" id="phanBenTrong">
+                        <section class="container-fluid" id="phanBenTrong" style="display: none;">
                             <div class="row justify-content-md-center">
                                 <div class="col-10 custom-input">
                                     <div class="container-fluid">
@@ -332,6 +334,16 @@
                         <br>
                         <section class="container-fluid">
                             <div class="row" id="listNote"></div>
+                            <!-- <div class="row">
+                                <div class="dropdown">
+                                    <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+                                    <div id="myDropdown" class="dropdown-content">
+                                      <a href="#">Link 1</a>
+                                      <a href="#">Link 2</a>
+                                      <a href="#">Link 3</a>
+                                    </div>
+                                  </div>
+                            </div> -->
                         </section>
                     </div>
                 </section>
@@ -341,7 +353,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="dist/js/bootstrap.min.js"></script>
-
     <script src="js/chart.min.js"></script>
     <script src="js/chart-data.js"></script>
     <script src="js/easypiechart.js"></script>
@@ -349,38 +360,60 @@
     <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/custom.js"></script>
     <script>
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+        function openDropdown(dropdownId) {
+            if($("#"+dropdownId).hasClass("show")){
+            $(".dropdown-content").removeClass("show");
+            }
+            else{
+            $(".dropdown-content").removeClass("show");
+               $("#"+dropdownId).addClass("show");
+            }
+        }
+        </script>
+    <script>
         var userid = null;
         var TempTag = [];
         var currentTag = null;
         function loadNote() {
-            if(userid===null){
+            if (userid === null) {
                 return;
             }
+            var urlk = "/note/" + userid + "/list"
             if (currentTag !== null) {
-                openKeep(currentTag);
-                return;
+                urlk += "/" + currentTag;
             }
             var listTagNoteTemp = [];
             var listTagNoteIdTemp = [];
             $.ajax({
-                url: "/note/"+userid+"/list",
+                url: urlk,
                 method: "GET",
                 contentType: "application/json; charset=UTF-8",
                 async: true,
                 success: function (data) {
                     $("#listNote").empty();
                     for (let i = 0; i < data.length; i++) {
-                        data[i].content = data[i].content.replace("\n", "<br>");
-                        $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right"><button onclick="moChinhSuaNote(` + data[i].id + `)" class="custom-button-o-small mr-2"><i
-                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
+                        console.log(data[i].content)
+                        data[i].content = data[i].content.replace(/\n/g, '<br>');
+                        // $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right"><button onclick="moChinhSuaNote(` + data[i].id + `)" class="custom-button-o-small mr-2"><i
+                        //                                 class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
+                        //     + `</div></div></div>`);
+                        $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right">` +
+                                                `<button onclick="openDropdown('myDropdown`+data[i].id+`')" class="custom-button-o-small mr-2 dropbtn"><i
+                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><div id="myDropdown`+data[i].id+`" class="dropdown-content">
+                                      <a onclick="moChinhSuaNote(` + data[i].id + `)" href="#">Chỉnh sửa ghi chú</a>
+                                      <a href="#">Lưu trữ ghi chú</a>
+                                      <a href="#">Xóa ghi chú</a>
+                                    </div><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
                             + `</div></div></div>`);
                         for (let j = 0; j < data[i].tagNoteId.length; j++) {
                             if (!listTagNoteIdTemp.includes(data[i].tagNoteId[j])) {
                                 $.ajax({
-                                    url: "/tagnote/"+userid+"/" + data[i].tagNoteId[j],
+                                    url: "/tagnote/" + userid + "/" + data[i].tagNoteId[j],
                                     method: "GET",
                                     success: function (datatagnote) {
-                                        console.log(datatagnote);
                                         listTagNoteTemp.push(datatagnote);
                                         listTagNoteIdTemp.push(datatagnote.id);
                                         $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-primary">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '<button class="btn-mini"' + ' onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
@@ -397,22 +430,20 @@
         }
 
         function loadAllTagNote() {
-            if(userid===null){
+            if (userid === null) {
                 return;
             }
             $.ajax({
-                url: "/tagnote/"+userid+"/list",
+                url: "/tagnote/" + userid + "/list",
                 method: "GET",
                 contentType: "application/json; charset=UTF-8",
                 async: true,
                 success: function (data) {
-                    console.log(data);
                     $(".taglist-item").remove();
                     $("#phanChinhSuaTag").empty();
                     // $("#selectTag").empty();
                     $("#selectTag").append('<option value=0 selected>Chọn 1 tag bất kỳ</option>');
                     for (let i = 0; i < data.length; i++) {
-                        console.log(data[i]);
                         $("#moChinhSuaNhan").before('<li class="nav-item taglist-item" onclick="openKeep(' + data[i].id + ')"><a class="nav-link" href="#" id="li' + data[i].id + '"><em class="fa fa-tag pr-1"></em> ' + data[i].title + '</a></li>');
                         $("#phanChinhSuaTag").append('<div class="row input-group p-0 m-0 rowTagNote">\n' +
                             '<div class="input-group-prepend">\n' +
@@ -458,9 +489,8 @@
                         tagNoteId: tag,
                         userid: userid
                     };
-                    console.log(note);
                     $.ajax({
-                        url: "/note/"+userid,
+                        url: "/note/" + userid,
                         method: "POST",
                         contentType: "application/json; charset=UTF-8",
                         data: JSON.stringify(note)
@@ -480,8 +510,7 @@
         function loadLocalAccount() {
             const u = localStorage.getItem("ttspringbootu");
             const p = localStorage.getItem("ttspringbootp");
-            console.log(u, p);
-            if (u !== "" && u!==null) {
+            if (u !== "" && u !== null) {
                 console.log("login")
                 processLogin(u, p);
             }
@@ -511,14 +540,13 @@
 
                 const newTagNote = $("#nhanMoi").val();
                 if (newTagNote !== "") {
-                    // $("#moChinhSua").before('<li class="nav-item"><a class="nav-link text-black" href="#"><em class="fa fa-tag"></em> ' + $("#nhanMoi").val() + '</a></li>');
                     const data = {
                         id: -1,
                         title: newTagNote,
                         userid: userid
                     }
                     $.ajax({
-                        url: "/tagnote/"+userid,
+                        url: "/tagnote/" + userid,
                         method: "POST",
                         contentType: "application/json; charset=UTF-8",
                         data: JSON.stringify(data),
@@ -541,7 +569,7 @@
                         userid: userid
                     }
                     $.ajax({
-                        url: "/tagnote/"+userid,
+                        url: "/tagnote/" + userid,
                         method: "POST",
                         contentType: "application/json; charset=UTF-8",
                         data: JSON.stringify(data),
@@ -569,7 +597,7 @@
                     userid: userid
                 }
                 $.ajax({
-                    url: "/tagnote/"+userid,
+                    url: "/tagnote/" + userid,
                     method: "POST",
                     contentType: "application/json; charset=UTF-8",
                     data: JSON.stringify(data),
@@ -583,15 +611,16 @@
         }
         //xóa nhãn
         function deleteTagNote(id) {
-            if(window.confirm("Xóa nhãn này khỏi tất cả ghi chú?")==true){
-            $.ajax({
-                url: "/tagnote/"+userid+"/" + id,
-                method: "DELETE",
-                contentType: "application/json; charset=UTF-8",
-                success: function () {
-                    loadAllTagNote();
-                }
-            });
+            if (window.confirm("Xóa nhãn này khỏi tất cả ghi chú?") == true) {
+                $.ajax({
+                    url: "/tagnote/" + userid + "/" + id,
+                    method: "DELETE",
+                    contentType: "application/json; charset=UTF-8",
+                    success: function () {
+                        loadAllTagNote();
+                        loadNote();
+                    }
+                });
             }
         }
         //sửa nhãn
@@ -603,7 +632,7 @@
                 userid: userid
             }
             $.ajax({
-                url: "/tagnote/"+userid,
+                url: "/tagnote/" + userid,
                 method: "PUT",
                 contentType: "application/json; charset=UTF-8",
                 data: JSON.stringify(data),
@@ -617,7 +646,6 @@
             var modal = document.getElementById("modalThemSuaNhan");
             modal.style.display = "block";
             $("#phanThemSuaNhan").empty();
-            console.log(TempTag);
             loadTagSelected();
             $(".hoanThanhThemSuaNhan").unbind("click");
             $(".hoanThanhThemSuaNhan").click(function () {
@@ -647,10 +675,9 @@
             TempTag = [];
             loadTempTagFromDB(id);
             $.ajax({
-                url: "/note/"+userid+"/" + id,
+                url: "/note/" + userid + "/" + id,
                 method: "GET",
                 success: function (data) {
-                    console.log(data);
                     modal.style.display = "block";
                     $("#titleSuaGhiChu").val(data.title);
                     $("#contentSuaGhiChu").val(data.content);
@@ -666,7 +693,6 @@
             }
             $(".hoanThanhChinhSuaGhiChu").unbind("click");
             $(".hoanThanhChinhSuaGhiChu").click(function () {
-                console.log(TempTag);
                 var modal = document.getElementById("modalChinhSuaGhiChu");
                 modal.style.display = "none";
                 tag = [];
@@ -683,7 +709,7 @@
                     userid: userid
                 }
                 $.ajax({
-                    url: "/note/"+userid,
+                    url: "/note/" + userid,
                     method: "PUT",
                     contentType: "application/json; charset=UTF-8",
                     data: JSON.stringify(data),
@@ -703,7 +729,7 @@
                 var modal = document.getElementById("modalThemSuaNhan");
                 modal.style.display = "block";
                 loadTagSelected();
-                
+
                 $(".hoanThanhThemSuaNhan").unbind("click");
                 $(".hoanThanhThemSuaNhan").click(function () {
                     var modal = document.getElementById("modalThemSuaNhan");
@@ -724,7 +750,7 @@
             TempTag = [];
             $("#currentTagSelected").empty();
             $.ajax({
-                url: "/tagnote/"+userid+"/list",
+                url: "/tagnote/" + userid + "/list",
                 method: "GET",
                 async: true,
                 success: function (data) {
@@ -734,7 +760,7 @@
                     }
                     if (noteid !== null)
                         $.ajax({
-                            url: "/note/"+userid+"/" + noteid,
+                            url: "/note/" + userid + "/" + noteid,
                             method: "GET",
                             success: function (datacheck) {
                                 var listTagUsed = datacheck.tagNoteId;
@@ -753,7 +779,6 @@
         }
         //nạp dữ liệu của TempTag
         function loadTagSelected() {
-            console.log(TempTag);
             $("#currentTagSelected").empty();
             $("#phanThemSuaNhan").empty();
             $("#nhanCuaGhiChuMoi").empty();
@@ -776,7 +801,6 @@
         }
         //xóa nhãn khỏi ghi chú
         function removeTagNotefromTag(noteid, tagNoteId) {
-            console.log(noteid);
             var m = document.getElementById("modalChinhSuaGhiChu")
             m.style.display = "none";
             $.ajax({
@@ -803,44 +827,15 @@
         }
         //chuyển tab theo nhãn
         function openKeep(tagNoteId) {
+            $(".nav-link").removeClass("active");
+            if (tagNoteId !== null)
+                $("#li" + tagNoteId).addClass("active");
+            else $("#li-all").addClass("active");
             var listTagNoteTemp = [];
             var listTagNoteIdTemp = [];
             huyThemGhiChu();
             currentTag = tagNoteId;
-            if (currentTag === null) {
-                loadNote();
-                return;
-            }
-            $.ajax({
-                url: "/note/"+userid+"/list/" + tagNoteId,
-                method: "GET",
-                success: function (data) {
-                    $("#listNote").empty();
-                    for (let i = 0; i < data.length; i++) {
-                        $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right"><button onclick="moChinhSuaNote(` + data[i].id + `)" class="custom-button-o-small mr-2"><i
-                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
-                            + `</div></div></div>`);
-                        for (let j = 0; j < data[i].tagNoteId.length; j++) {
-                            if (!listTagNoteIdTemp.includes(data[i].tagNoteId[j])) {
-                                $.ajax({
-                                    url: "/tagnote/"+userid+"/" + data[i].tagNoteId[j],
-                                    method: "GET",
-                                    success: function (datatagnote) {
-                                        console.log(datatagnote);
-                                        listTagNoteTemp.push(datatagnote);
-                                        listTagNoteIdTemp.push(datatagnote.id);
-                                        $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-primary">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '<button class="btn-mini"' +
-                                            +'onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
-                                    },
-                                    fail: function () { }
-                                });
-                            }
-                            else
-                                $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-primary">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '<button class="btn-mini"' + 'onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
-                        }
-                    }
-                }
-            });
+            loadNote();
         }
         //đăng nhập
         function openLogin() {
@@ -849,7 +844,6 @@
         }
         function LoginNow() {
             const uname = $("#uname").val();
-            console.log(uname);
             const password = $("#psw").val();
             processLogin(uname, password);
         }
@@ -884,11 +878,13 @@
                 }
             });
         }
-        function LogOut(){
-            userid = null;
-            localStorage.setItem("ttspringbootu", "");
-            localStorage.setItem("ttspringbootp", "");
-            location.reload();
+        function LogOut() {
+            if (window.confirm("Bạn có muốn đăng xuất") == true) {
+                userid = null;
+                localStorage.setItem("ttspringbootu", "");
+                localStorage.setItem("ttspringbootp", "");
+                location.reload();
+            }
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"

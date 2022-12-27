@@ -11,4 +11,5 @@ public interface NoteRepository  extends MongoRepository<Note, Long> {
     List<Note> findAllByUseridAndTagNoteId(Long userid, Long tagNoteId);
     boolean existsByIdAndUserid(Long userid, Long id);
     Note findByUseridAndId(Long userid, Long Id);
+    List<Note> findAllByUseridAndStoragedAndDeleted(Long userid, boolean isStoraged, boolean isDeleted);
 }

@@ -15,8 +15,8 @@ public class AccountService {
     @Autowired
     AccountRepository thisRepository;
     public Long Login(Account account){
-        if(thisRepository.existsAccountByUsernameAndPassword(account.getUsername(), account.getPassword())){
-            return thisRepository.getAccountByUsernameAndPassword(account.getUsername(), account.getPassword()).getId();
+        if(thisRepository.existsAccountByUsername(account.getUsername())){
+            return thisRepository.findByUsername(account.getUsername()).getId();
         }
         return 0L;
     }
