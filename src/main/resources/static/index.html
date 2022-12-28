@@ -49,6 +49,12 @@
             opacity: 0.5;
         }
 
+        .bg-dlight{
+            background-color: #bdbdbd;
+        }
+        .bg-dlight:hover{
+            background-color: #7c7c7c;
+        }
         .mini-nav button:hover {
             background-color: #5b5eaf !important;
             opacity: 1;
@@ -56,6 +62,10 @@
 
         .btn-mini {
             border-radius: 50%;
+        }
+        .font-s11{
+            font-size: 11px;
+            font-weight: bolder;
         }
 
         .text-title {
@@ -213,6 +223,7 @@
                         <label for="uname"><b>Tài khoản</b></label><br>
                         <input type="text" class="form-control" placeholder="Nhập tài khoản" name="uname" id="uname"
                             required>
+                            <br>
                         <!-- 
                         <label for="psw"><b>Mật khẩu</b></label><br>
                         <input type="password" class="form-control" placeholder="Nhập mật khẩu" name="psw" id="psw"
@@ -234,16 +245,16 @@
                 <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><em class="fa fa-bars"></em></a>
                 <ul class="nav flex-column" id="nav-slide">
                     <li class="nav-item"><a class="nav-link active" href="#" onclick="openKeep(null)" id="li-all"><em
-                                class="fa fa-dashboard"></em>
+                                class="fa fa-book"></em>
                             Ghi chú</a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><em class="fa fa-calendar-o"></em>
                             Lời nhắc</a></li>
                     <span id="li-listTagNote"></span>
                     <li class="nav-item"><a class="nav-link" id="moChinhSuaNhan" href="#"><em
                                 class="fa fa-bar-chart"></em> Chỉnh sửa nhãn</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><em class="fa fa-hand-o-up"></em> Lưu
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="openKeep('TabStoraged')"><em class="fa fa-dropbox"></em> Lưu
                             trữ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><em class="fa fa-pencil-square-o"></em> Thùng
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="openKeep('TabDeleted')"><em class="fa fa-trash"></em> Thùng
                             rác</a></li>
                 </ul>
             </nav>
@@ -364,15 +375,15 @@
             document.getElementById("myDropdown").classList.toggle("show");
         }
         function openDropdown(dropdownId) {
-            if($("#"+dropdownId).hasClass("show")){
-            $(".dropdown-content").removeClass("show");
+            if ($("#" + dropdownId).hasClass("show")) {
+                $(".dropdown-content").removeClass("show");
             }
-            else{
-            $(".dropdown-content").removeClass("show");
-               $("#"+dropdownId).addClass("show");
+            else {
+                $(".dropdown-content").removeClass("show");
+                $("#" + dropdownId).addClass("show");
             }
         }
-        </script>
+    </script>
     <script>
         var userid = null;
         var TempTag = [];
@@ -381,9 +392,21 @@
             if (userid === null) {
                 return;
             }
-            var urlk = "/note/" + userid + "/list"
-            if (currentTag !== null) {
-                urlk += "/" + currentTag;
+            var urlk;
+            switch (currentTag) {
+                case "TabDeleted": {
+                    urlk = "/note/" + userid + "/deleted/list";
+                    break;
+                }
+                case "TabStoraged": {
+                    urlk = "/note/" + userid + "/storaged/list";
+                    break;
+                }
+                default: {
+                    currentTag === null ?
+                    urlk = "/note/" + userid + "/list" :
+                    urlk = "/note/" + userid + "/list/" + currentTag
+                }
             }
             var listTagNoteTemp = [];
             var listTagNoteIdTemp = [];
@@ -400,14 +423,35 @@
                         // $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right"><button onclick="moChinhSuaNote(` + data[i].id + `)" class="custom-button-o-small mr-2"><i
                         //                                 class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
                         //     + `</div></div></div>`);
-                        $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right">` +
-                                                `<button onclick="openDropdown('myDropdown`+data[i].id+`')" class="custom-button-o-small mr-2 dropbtn"><i
-                                                        class="fa fa-pencil tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><div id="myDropdown`+data[i].id+`" class="dropdown-content">
+                        if(currentTag==="TabStoraged"){
+                            $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right">` +
+                                `<button onclick="openDropdown('myDropdown` + data[i].id + `')" class="custom-button-o-small mr-2 dropbtn"><i
+                                    class="fa fa-list-ul tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><div id="myDropdown`+ data[i].id + `" class="dropdown-content float-right">
                                       <a onclick="moChinhSuaNote(` + data[i].id + `)" href="#">Chỉnh sửa ghi chú</a>
-                                      <a href="#">Lưu trữ ghi chú</a>
-                                      <a href="#">Xóa ghi chú</a>
+                                      <a onclick="huyLuuTruNote(` + data[i].id + `)" href="#">Hủy lưu trữ</a>
+                                      <a onclick="xoaNote(` + data[i].id + `)" href="#">Xóa ghi chú</a>
                                     </div><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
-                            + `</div></div></div>`);
+                                + `</div></div></div>`);
+                        }
+                        else if(currentTag==="TabDeleted"){
+                            $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right">` +
+                                `<button onclick="openDropdown('myDropdown` + data[i].id + `')" class="custom-button-o-small mr-2 dropbtn"><i
+                                    class="fa fa-list-ul tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><div id="myDropdown`+ data[i].id + `" class="dropdown-content float-right">
+                                        <a onclick="huyXoaNote(` + data[i].id + `)" href="#">Khôi phục</a>
+                                        <a onclick="xoaVinhVienNote(` + data[i].id + `)" href="#">Xóa vĩnh viễn</a>
+                                    </div><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
+                                + `</div></div></div>`);
+                        }
+                        else {
+                            $("#listNote").append(`<div class="col-lg-3 md-4 mb-3"><div class="card text-dark bg-default"><div class="card-header"><div class="row"><span class="col-8">` + data[i].title + `</span><span class="col-4 text-right">` +
+                                `<button onclick="openDropdown('myDropdown` + data[i].id + `')" class="custom-button-o-small mr-2 dropbtn"><i
+                                    class="fa fa-list-ul tr-1-1"></i></button></span></div></div><div class="card-block"><div class="row"><div id="myDropdown`+ data[i].id + `" class="dropdown-content">
+                                      <a onclick="moChinhSuaNote(` + data[i].id + `)" href="#">Chỉnh sửa ghi chú</a>
+                                      <a onclick="luuTruNote(` + data[i].id + `)" href="#">Lưu trữ ghi chú</a>
+                                      <a onclick="xoaNote(` + data[i].id + `)" href="#">Xóa ghi chú</a>
+                                    </div><p class="mr-3 ml-3">` + data[i].content + `</p></div><div class="row" id="tagcontent` + data[i].id + `"></div></div>`
+                                + `</div></div></div>`);
+                        }
                         for (let j = 0; j < data[i].tagNoteId.length; j++) {
                             if (!listTagNoteIdTemp.includes(data[i].tagNoteId[j])) {
                                 $.ajax({
@@ -416,13 +460,13 @@
                                     success: function (datatagnote) {
                                         listTagNoteTemp.push(datatagnote);
                                         listTagNoteIdTemp.push(datatagnote.id);
-                                        $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-primary">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '<button class="btn-mini"' + ' onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
+                                        $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-dlight"><nav class="d-inline font-s11" onclick="openKeep(`'+listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].id+'`)">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '</nav><button class="d-inline btn-mini font-s11"' + ' onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
                                     },
                                     fail: function () { }
                                 });
                             }
                             else
-                                $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-primary">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '<button class="btn-mini"' + ' onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
+                            $("#tagcontent" + data[i].id).append('<nav class="ml-2 pl-2 mini-nav bg-dlight"><nav class="d-inline font-s11" onclick="openKeep(`'+listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].id+'`)">' + listTagNoteTemp[listTagNoteIdTemp.indexOf(data[i].tagNoteId[j])].title + '</nav>button class="d-inline btn-mini font-s11"' + ' onclick="removeTagNotefromTag(' + data[i].id + ',' + data[i].tagNoteId[j] + ')">x</button></nav>');
                         }
                     }
                 }
@@ -486,6 +530,8 @@
                         id: -1,
                         title: tieuDe,
                         content: noiDung,
+                        deleted: false,
+                        storaged: false,
                         tagNoteId: tag,
                         userid: userid
                     };
@@ -530,6 +576,8 @@
             $("#" + idOpen).click(function () {
                 modal.style.display = "block";
                 $("#nhanMoi").focus();
+                $("#phanBenTrong").hide();
+                $("#phanBenNgoai").show();
                 loadAllTagNote();
             });
             $("#" + idClose).click(function () {
@@ -701,10 +749,13 @@
                         tag.push(TempTag[i].id);
                     }
                 }
+                //isDeleted và isStoraged không có ý nghĩa trong data này
                 const data = {
                     id: id,
                     title: $("#titleSuaGhiChu").val(),
                     content: $("#contentSuaGhiChu").val(),
+                    deleted: false,
+                    storaged: false,
                     tagNoteId: tag,
                     userid: userid
                 }
@@ -742,6 +793,56 @@
                     }
                 }
             })
+        }
+        function luuTruNote(noteid) {
+            $.ajax({
+                url: "/note/" + userid + "/" + noteid + "/instoraged",
+                method: "PUT",
+                    contentType: "application/json; charset=UTF-8",
+                success: function () {
+                    loadNote();
+                }
+            });
+        }
+        function huyLuuTruNote(noteid) {
+            $.ajax({
+                url: "/note/" + userid + "/" + noteid + "/outstoraged",
+                method: "PUT",
+                    contentType: "application/json; charset=UTF-8",
+                success: function () {
+                    loadNote();
+                }
+            });
+        }
+        function xoaNote(noteid) {
+            $.ajax({
+                url: "/note/" + userid + "/" + noteid + "/indeleted",
+                method: "PUT",
+                    contentType: "application/json; charset=UTF-8",
+                success: function () {
+                    loadNote();
+                }
+            });
+        }
+        function xoaVinhVienNote(noteid) {
+            $.ajax({
+                url: "/note/" + userid + "/" + noteid + "/harddelete",
+                method: "DELETE",
+                    contentType: "application/json; charset=UTF-8",
+                success: function () {
+                    loadNote();
+                }
+            });
+        }
+        function huyXoaNote(noteid) {
+            $.ajax({
+                url: "/note/" + userid + "/" + noteid + "/outdeleted",
+                method: "PUT",
+                    contentType: "application/json; charset=UTF-8",
+                success: function () {
+                    loadNote();
+                }
+            });
         }
         //nạp dữ nhãn vào TempTag từ database rồi đưa ra phanBenTrong
         function loadTempTagFromDB(noteid) {
@@ -849,6 +950,9 @@
         }
 
         function processLogin(uname, password) {
+            if(uname===null || uname===""){
+                alert("Hãy nhập tên tài khoản");
+            }
             let data = { id: -1, username: uname, password: password }
             $.ajax({
                 url: "/account",
@@ -867,8 +971,10 @@
                     $("#usernamebox").empty();
                     $("#usernamebox").append(uname);
                     modal.style.display = "none";
-                    localStorage.setItem("ttspringbootu", uname);
-                    localStorage.setItem("ttspringbootp", password);
+                    if($("#remember").is(":checked")){
+                        localStorage.setItem("ttspringbootu", uname);
+                        localStorage.setItem("ttspringbootp", password);
+                    }
                     loadNote();
                     loadAllTagNote();
                     return 1;
